@@ -1,0 +1,29 @@
+--city with min length
+select * from (select city , length(city) from station order by length(city), city) where rownum = 1;
+--city with max length
+select * from (select city , length(city) from station order by length(city) desc, city desc) where rownum = 1;
+
+--And another option when we return result in one query:
+------------------------------------------------------------------
+--select one city with min length
+select city, city_l 
+from (--find city with min length
+      select city, length(city) as city_l 
+      from station 
+      where length(city) in (--find min length 
+                            select min(length(city))
+                            from station) 
+                            order by 2, 1)
+where rownum = 1
+--unite two results
+union all 
+--select one city with max length
+select city, city_l 
+from (--find city with max 
+      select city, length(city) as city_l 
+      from station 
+      where length(city) in (--find max length
+                            select max(length(city))
+                            from station) 
+                            order by 2, 1)
+where rownum = 1;
