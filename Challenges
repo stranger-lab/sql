@@ -1,0 +1,24 @@
+--pring hacker_id, name, total number of challanges
+select hacker_id, name, tot_chll_num from (
+select h.hacker_id, h.name, count(c.challenge_id) as tot_chll_num
+from hackers h, challenges c
+where h.hacker_id = c.hacker_id
+group by h.hacker_id, h.name)
+--when total number of challanges is equal to max number of all challanges
+--HAVING clause is used in combination with the GROUP BY clause to restrict the groups of returned rows 
+having tot_chll_num = (select max(count(challenge_id)) as max_chll_num
+                        from challenges
+                        group by hacker_id)
+-- or total number of challanges in (distinct total number of challenges less then max)
+or tot_chll_num in (select tot_chll_num from (
+                    select count(challenge_id) as tot_chll_num
+                    from challenges
+                    group by hacker_id)
+                    --when total challange number has one element
+                    group by tot_chll_num
+                    having count(tot_chll_num)=1)
+group by hacker_id, name, tot_chll_num
+-- Sort total number of challenges in descending order and  
+-- If more than one student created the same number of challenges, then sort the result by hacker_id
+order by tot_chll_num desc, hacker_id
+;
