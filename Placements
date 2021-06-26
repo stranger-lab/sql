@@ -1,0 +1,19 @@
+--best friends who got offered a higher salary
+select a.name
+from (
+        --find student
+        select s.id, s.name, p.salary, f.friend_id
+        from friends f, students s, packages p
+        where s.id = f.id
+        and s.id = p.id
+) a, 
+(
+        --find friend
+        select f.friend_id, s.name, p.salary
+        from friends f, students s, packages p
+        where f.friend_id = s.id
+        and f.friend_id = p.id
+) b
+where a.friend_id = b.friend_id
+and a.salary < b.salary
+order by b.salary;
