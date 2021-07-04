@@ -1,0 +1,23 @@
+select 
+x1, y1 from (
+select a.x as x1, b.y as y2, b.x as x2, a.y as y1
+from functions a, functions b
+where a.x = b.y
+and b.x = a.y
+) 
+group by x1, y1
+having count(x1) > 1 or x1 < y1
+order by x1;
+
+/*
+or
+
+select 
+a.x as x1, a.y as y1
+from functions a, functions b
+where a.x = b.y
+and b.x = a.y
+group by a.x, a.y
+having count(a.x) > 1 or a.x < a.y
+order by a.x;
+*/
